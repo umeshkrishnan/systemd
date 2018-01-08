@@ -12,15 +12,18 @@ Description=Serial Getty on %I
 Documentation=man:agetty(8) man:systemd-getty-generator(8)
 Documentation=http://0pointer.de/blog/projects/serial-console.html
 BindsTo=dev-%i.device
-After=dev-%i.device systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
-m4_ifdef(`HAVE_SYSV_COMPAT',
-After=rc-local.service
-)m4_dnl
+#After=dev-%i.device systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
+#m4_ifdef(`HAVE_SYSV_COMPAT',
+#After=rc-local.service
+#)m4_dnl
+DefaultDependencies=no                                    
+After=sysinit.target                                              
+Before=basic.target systemd-networkd.service
 
 # If additional gettys are spawned during boot then we should make
 # sure that this is synchronized before getty.target, even though
 # getty.target didn't actually pull it in.
-Before=getty.target
+#Before=getty.target
 IgnoreOnIsolate=yes
 
 # IgnoreOnIsolate causes issues with sulogin, if someone isolates
@@ -45,4 +48,5 @@ IgnoreSIGPIPE=no
 SendSIGHUP=yes
 
 [Install]
-WantedBy=getty.target
+#WantedBy=getty.target
+WantedBy=basic.target
